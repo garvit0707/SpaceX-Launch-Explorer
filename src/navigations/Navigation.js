@@ -3,8 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ListScreen from '../screens/ListScreen';
 import DetailedScreen from '../screens/DetailedScreen';
-import SplashScreen from '../screens/SplashScreen';
-
+import SplashScreen from '../screens/splash/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,4 +19,4 @@ const Navigation = () => {
   )
 }
 
-export default Navigation
+export default Navigation;
