@@ -98,19 +98,23 @@ export default function ListScreen() {
     return { label: "Failure", color: "#FF3B30" };
   };
 
-  const handleClick =(item)=>{
-    navigation.navigate("detailed",{ launch: item });
-  };
+  type HandleLaunchProp = {
+    item: null,
+  }
+
+ const handleClick = (item) => {
+  console.log("launch padd id is!!!",item?.launchpad)
+   navigation.navigate("detailed", {launched: item?.launchpad});
+  // console.log("thr navigation pressed is here")
+};
 
   const renderItem = ({ item }) => {
-    console.log("the items i ma getting is here",item)
     const status = getStatus(item);
     const img = item.links?.patch?.small;
   // Skip rendering if no image
     if (!img) return null;
-      // {console.log("the uri image here i am gettting is ",img)}
     return (
-      <TouchableOpacity style={styles.card} onPress={handleClick}>
+     <TouchableOpacity style={styles.card} onPress={() => handleClick(item)}>
         <Image source={{ uri: img }} style={styles.image} />
         <View style={styles.content}>
           <Text style={styles.title}>{item.name}</Text>
