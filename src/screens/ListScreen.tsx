@@ -117,13 +117,15 @@ export default function ListScreen() {
      <TouchableOpacity style={styles.card} onPress={() => handleClick(item)}>
         <Image source={{ uri: img }} style={styles.image} />
         <View style={styles.content}>
+          <View style={{flexDirection:"row",justifyContent:"space-between"}}>
           <Text style={styles.title}>{item.name}</Text>
-          <Text style={styles.subtitle}>{formatDate(item.date_utc)}</Text>
           <View style={[styles.statusPill, { backgroundColor: status.color + "20" }]}>
             <Text style={[styles.statusText, { color: status.color }]}>
               {status.label}
             </Text>
           </View>
+          </View>
+          <Text style={styles.subtitle}>{formatDate(item.date_utc)}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -223,9 +225,6 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    // backgroundColor: "#eee",
-    // borderTopLeftRadius: 12,
-    // borderBottomLeftRadius: 12,
   },
   content: {
     flex: 1,
@@ -235,6 +234,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     marginBottom: 4,
+    width:"70%",
+    flexWrap:"wrap",
   },
   subtitle: {
     fontSize: 14,
