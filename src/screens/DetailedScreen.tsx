@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,19 +8,31 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
+  Animated,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import MapView from "react-native-maps";
 
 const { width } = Dimensions.get("window");
 
-const DetailedScreen = () => {
-  const route = useRoute();
-  const { launched } = route.params;
+type RootStackParamList = {
+  Detailed: { launched: string };
+};
 
+type DetailedScreenRouteProp = RouteProp<RootStackParamList, "Detailed">;
+
+const DetailedScreen = () => {
+  const route = useRoute<DetailedScreenRouteProp>();
+  const { launched } = route.params;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imageUrl, setImageUrl] = useState(null);
   const [showMore, setShowMore] = useState(false);
+  const [attemptsCount, setAttemptsCount] = useState(0);
+  const [successCount, setSuccessCount] = useState(0);
+
+  const attemptsAnim = React.useRef(new Animated.Value(0)).current;
+  const successAnim = React.useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const fetchLaunchpadDetails = async () => {
@@ -43,6 +55,36 @@ const DetailedScreen = () => {
     };
     fetchLaunchpadDetails();
   }, [launched]);
+
+  useEffect(() => {
+    if (data?.launch_attempts) {
+      attemptsAnim.addListener(({ value }) => {
+        setAttemptsCount(Math.floor(value));
+      });
+
+      Animated.timing(attemptsAnim, {
+        toValue: data.launch_attempts,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }
+
+    if (data?.launch_successes) {
+      successAnim.addListener(({ value }) => {
+        setSuccessCount(Math.floor(value));
+      });
+
+      Animated.timing(successAnim, {
+        toValue: data.launch_successes,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }
+    return () => {
+      attemptsAnim.removeAllListeners();
+      successAnim.removeAllListeners();
+    };
+  }, [data]);
 
   if (loading) {
     return (
@@ -108,11 +150,11 @@ const DetailedScreen = () => {
         {/* Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{data.launch_attempts}</Text>
+            <Text style={styles.statNumber}>{attemptsCount}</Text>
             <Text style={styles.statLabel}>Launch Attempts</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{data.launch_successes}</Text>
+            <Text style={styles.statNumber}>{successCount}</Text>
             <Text style={styles.statLabel}>Launch Successes</Text>
           </View>
         </View>
