@@ -33,6 +33,7 @@ const DetailedScreen = () => {
 
   const attemptsAnim = React.useRef(new Animated.Value(0)).current;
   const successAnim = React.useRef(new Animated.Value(0)).current;
+  const progressAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const fetchLaunchpadDetails = async () => {
@@ -79,6 +80,16 @@ const DetailedScreen = () => {
         duration: 1000,
         useNativeDriver: false,
       }).start();
+
+      if (data?.launch_attempts > 0) {
+        const rate = (data.launch_successes / data.launch_attempts) * 100;
+
+        Animated.timing(progressAnim, {
+          toValue: rate,
+          duration: 1000,
+          useNativeDriver: false,
+        }).start();
+      }
     }
     return () => {
       attemptsAnim.removeAllListeners();
@@ -110,6 +121,11 @@ const DetailedScreen = () => {
   };
 
   const statusColor = statusColors[data.status] || statusColors.unknown;
+
+  const successRate =
+    data.launch_attempts > 0
+      ? (data.launch_successes / data.launch_attempts) * 100
+      : 0;
 
   return (
     <ScrollView style={styles.container}>
@@ -157,6 +173,47 @@ const DetailedScreen = () => {
             <Text style={styles.statNumber}>{successCount}</Text>
             <Text style={styles.statLabel}>Launch Successes</Text>
           </View>
+        </View>
+
+        <View style={styles.progressBarWrapper}>
+          <View style={styles.progressBarContainer}>
+            <Animated.View
+              style={[
+                styles.progressBarFill,
+                {
+                  width: progressAnim.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: ["0%", "100%"],
+                  }),
+                },
+              ]}
+            />
+          </View>
+
+          {/* Floating box */}
+          {/* Floating box with notch */}
+          <Animated.View
+            style={[
+              styles.progressBox,
+              {
+                transform: [
+                  {
+                    translateX: progressAnim.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [0, width - 60], // keep box inside
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            <Text style={styles.progressBoxText}>
+              {successRate.toFixed(1)}%
+            </Text>
+
+            {/* Triangle notch */}
+            <View style={styles.triangle} />
+          </Animated.View>
         </View>
 
         {/* Info Cards */}
@@ -224,6 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statusPill: {
+    marginTop:-40,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 50,
@@ -289,6 +347,52 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontWeight: "500",
   },
+  progressBarWrapper: {
+    marginBottom: 20,
+    position: "relative",
+  },
+  progressBarContainer: {
+    height: 12,
+    backgroundColor: "#E5E7EB",
+    borderRadius: 6,
+    overflow: "hidden",
+  },
+  progressBarFill: {
+    height: "100%",
+    backgroundColor: "#4ADE80",
+  },
+  progressBox: {
+    position: "absolute",
+    zIndex: 2,
+    top: 20, // BELOW the progress bar
+    width: 50,
+    height: 24,
+    backgroundColor: "#2563EB",
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  triangle: {
+    position: "absolute",
+    top: -6, // stick to the top of the box
+    left: "50%",
+    marginLeft: -5,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 6,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderBottomColor: "#9196a1ff", // match box color
+  },
+  progressBoxText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   errorText: { fontSize: 18, color: "#EF4444" },
 });
