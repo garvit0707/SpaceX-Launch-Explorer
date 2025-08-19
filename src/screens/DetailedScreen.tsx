@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import MapView from "react-native-maps";
-
+import Ionicons from "react-native-vector-icons/Ionicons";
 const { width } = Dimensions.get("window");
 
 type RootStackParamList = {
@@ -155,12 +155,15 @@ const DetailedScreen = () => {
         </View>
 
         {/* Location */}
-        <Text style={styles.location}>
-          📍 {data.locality}, {data.region}
-        </Text>
-        <Text style={styles.coordinates}>
+        <View style={styles.locationRow}>
+          <Ionicons name="location-outline" size={18} color="#111827" />
+          <Text style={styles.locationText}>
+            {data.locality}, {data.region}
+          </Text>
+        </View>
+        {/* <Text style={styles.coordinates}>
           Lat: {data.latitude.toFixed(4)}°, Long: {data.longitude.toFixed(4)}°
-        </Text>
+        </Text> */}
         <Text style={styles.timezone}>🕒 {data.timezone}</Text>
 
         {/* Stats */}
@@ -176,7 +179,7 @@ const DetailedScreen = () => {
         </View>
 
         <View style={styles.progressBarWrapper}>
-          <View style={styles.progressBarContainer}>
+          {/* <View style={styles.progressBarContainer}>
             <Animated.View
               style={[
                 styles.progressBarFill,
@@ -188,11 +191,9 @@ const DetailedScreen = () => {
                 },
               ]}
             />
-          </View>
+          </View> */}
 
-          {/* Floating box */}
-          {/* Floating box with notch */}
-          <Animated.View
+          {/* <Animated.View
             style={[
               styles.progressBox,
               {
@@ -200,7 +201,7 @@ const DetailedScreen = () => {
                   {
                     translateX: progressAnim.interpolate({
                       inputRange: [0, 100],
-                      outputRange: [0, width - 60], // keep box inside
+                      outputRange: [0, width - 60], 
                     }),
                   },
                 ],
@@ -209,16 +210,16 @@ const DetailedScreen = () => {
           >
             <Text style={styles.progressBoxText}>
               {successRate.toFixed(1)}%
-            </Text>
+            </Text> */}
 
-            {/* Triangle notch */}
-            <View style={styles.triangle} />
-          </Animated.View>
+          {/* Triangle notch */}
+          {/* <View style={styles.triangle} />
+          </Animated.View>*/}
         </View>
 
         {/* Info Cards */}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Rocket</Text>
+          <Text style={styles.infoTitle}>SpaceX Info</Text>
           <Text style={styles.infoText}>
             {data.rockets[0] || "No rocket information"}
           </Text>
@@ -268,8 +269,23 @@ const styles = StyleSheet.create({
   location: {
     fontSize: 15,
     color: "#2563EB",
-    marginTop: 8,
+    // marginTop: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "red",
   },
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  locationText: {
+    fontSize: 15,
+    color: "#2563EB",
+    marginLeft: 5,
+  },
+
   coordinates: {
     fontSize: 14,
     color: "#6B7280",
@@ -278,10 +294,11 @@ const styles = StyleSheet.create({
   timezone: {
     fontSize: 14,
     color: "#6B7280",
+    marginTop: 2,
     marginBottom: 20,
   },
   statusPill: {
-    marginTop:-40,
+    marginTop: -40,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 50,
@@ -348,7 +365,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   progressBarWrapper: {
-    marginBottom: 20,
+    // marginBottom: 20,
     position: "relative",
   },
   progressBarContainer: {
