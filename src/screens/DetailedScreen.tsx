@@ -11,9 +11,9 @@ import {
   Animated,
 } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
-import MapView from "react-native-maps";
 import Ionicons from "react-native-vector-icons/Ionicons";
 const { width } = Dimensions.get("window");
+import MapView, { Marker } from "react-native-maps";
 
 type RootStackParamList = {
   Detailed: { launched: string };
@@ -128,7 +128,7 @@ const DetailedScreen = () => {
       : 0;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container2}>
       {/* Hero Image */}
       {imageUrl ? (
         <Image source={{ uri: imageUrl }} style={styles.heroImage} />
@@ -137,6 +137,23 @@ const DetailedScreen = () => {
           <Text style={styles.placeholderText}>No Image Available</Text>
         </View>
       )}
+      <View style={{flex:1}}>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: 28.6139,
+            longitude: 77.209,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        >
+          <Marker
+            coordinate={{ latitude: 28.6139, longitude: 77.209 }}
+            title="New Delhi"
+            description="Capital of India"
+          />
+        </MapView>
+      </View>
 
       <View style={styles.content}>
         {/* Title + Status */}
@@ -243,6 +260,8 @@ const DetailedScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9FAFB" },
+  container2: { flex: 1 },
+  map: { flex: 1 },
   heroImage: {
     width: width,
     height: width * 0.6,
