@@ -138,7 +138,7 @@ const DetailedScreen = () => {
         </View>
       )}
       <View style={{flex:1}}>
-        <MapView
+        {/* <MapView
           style={styles.map}
           initialRegion={{
             latitude: 28.6139,
@@ -152,7 +152,7 @@ const DetailedScreen = () => {
             title="New Delhi"
             description="Capital of India"
           />
-        </MapView>
+        </MapView> */}
       </View>
 
       <View style={styles.content}>
