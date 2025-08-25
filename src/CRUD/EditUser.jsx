@@ -9,7 +9,6 @@ import api from '../utils/Api/Api';
 const UserDetails = () => {
   const navigation = useNavigation()
   const route = useRoute()
-  // console.log("route in here edit screens",route)
   const [newName,setNewName] = useState("");
   const [newEmail,SetNewEmail] = useState("");
   const [ids,setIds] = useState("");
