@@ -14,6 +14,8 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 const { width } = Dimensions.get("window");
 import MapView, { Marker } from "react-native-maps";
+import { fetchLaunchpadDetails } from "../redux/Slice/LaunchpadSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 type RootStackParamList = {
   Detailed: { launched: string };
@@ -22,40 +24,23 @@ type RootStackParamList = {
 type DetailedScreenRouteProp = RouteProp<RootStackParamList, "Detailed">;
 
 const DetailedScreen = () => {
+  const {data,loading, error} = useSelector((state:any)=>state.launchpad)
   const route = useRoute<DetailedScreenRouteProp>();
+  const dispatch = useDispatch();
   const { launched } = route.params;
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [imageUrl, setImageUrl] = useState(null);
+  // const [imageUrl, setImageUrl] = useState(null);
   const [showMore, setShowMore] = useState(false);
   const [attemptsCount, setAttemptsCount] = useState(0);
   const [successCount, setSuccessCount] = useState(0);
-
+  const imageUrl = data.images?.large?.[0] || null;
   const attemptsAnim = React.useRef(new Animated.Value(0)).current;
   const successAnim = React.useRef(new Animated.Value(0)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    const fetchLaunchpadDetails = async () => {
-      try {
-        const res = await fetch(
-          `https://api.spacexdata.com/v4/launchpads/${launched}`
-        );
-        const json = await res.json();
-        setData(json);
 
-        if (json.images?.large?.length > 0) {
-          setImageUrl(json.images.large[0]);
-        }
-      } catch (err) {
-        console.log("Error fetching launchpad details:", err);
-        setImageUrl(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLaunchpadDetails();
-  }, [launched]);
+  useEffect(()=>{
+    dispatch(fetchLaunchpadDetails(launched))
+  },[launched])
 
   useEffect(() => {
     if (data?.launch_attempts) {
