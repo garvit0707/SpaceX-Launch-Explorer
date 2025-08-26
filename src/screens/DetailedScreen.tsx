@@ -18,7 +18,7 @@ import { fetchLaunchpadDetails } from "../redux/Slice/LaunchpadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 type RootStackParamList = {
-  Detailed: { launched: string };
+  Detailed: { launched: any };
 };
 
 type DetailedScreenRouteProp = RouteProp<RootStackParamList, "Detailed">;
@@ -39,7 +39,7 @@ const DetailedScreen = () => {
 
 
   useEffect(()=>{
-    dispatch(fetchLaunchpadDetails(launched))
+    dispatch(fetchLaunchpadDetails(launched)  as any)
   },[launched])
 
   useEffect(() => {
@@ -181,7 +181,7 @@ const DetailedScreen = () => {
         </View>
 
         <View style={styles.progressBarWrapper}>
-          {/* <View style={styles.progressBarContainer}>
+          <View style={styles.progressBarContainer}>
             <Animated.View
               style={[
                 styles.progressBarFill,
@@ -193,9 +193,9 @@ const DetailedScreen = () => {
                 },
               ]}
             />
-          </View> */}
+          </View>
 
-          {/* <Animated.View
+          <Animated.View
             style={[
               styles.progressBox,
               {
@@ -212,11 +212,11 @@ const DetailedScreen = () => {
           >
             <Text style={styles.progressBoxText}>
               {successRate.toFixed(1)}%
-            </Text> */}
+            </Text>
 
           {/* Triangle notch */}
-          {/* <View style={styles.triangle} />
-          </Animated.View>*/}
+          <View style={styles.triangle} />
+          </Animated.View>
         </View>
 
         {/* Info Cards */}
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   progressBox: {
     position: "absolute",
     zIndex: 2,
-    top: 20, // BELOW the progress bar
+    top: 20, 
     width: 50,
     height: 24,
     backgroundColor: "#2563EB",
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
 
   triangle: {
     position: "absolute",
-    top: -6, // stick to the top of the box
+    top: -6, 
     left: "50%",
     marginLeft: -5,
     width: 0,
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 6,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderBottomColor: "#9196a1ff", // match box color
+    borderBottomColor: "#9196a1ff", 
   },
   progressBoxText: {
     color: "#FFFFFF",
