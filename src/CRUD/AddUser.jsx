@@ -7,9 +7,9 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import api from "../utils/Api/Api";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { saveUser } from "../redux/Slice/UserSlice";
+import { createUser } from "../redux/Slice/UserSlice";
 
 
 const UserDetails = () => {
@@ -18,24 +18,11 @@ const UserDetails = () => {
   const [email, setEmail] = useState([]);
   const navigation = useNavigation();
 
-  const fetchUser = async () => {
-    try {
-      const payload = {
-        name: name,
-        email: email,
-      };
-      const apicall = await api.post("users", payload);
-      console.log("apicall is here", apicall.data);
-    } catch (error) {
-      console.log("the error comes here!!", error);
-    }
-  };
-
-
   const handleTouch = () => {
-    fetchUser();
-    dispatch(saveUser({name,email}))
-    navigation.navigate("detailedUser", { name, email });
+    const payload = {name,email};
+    dispatch(createUser(payload))
+   dispatch(saveUser(payload)); 
+    navigation.navigate("detailedUser", payload);
   };
 
   const handleuser = ()=>{
