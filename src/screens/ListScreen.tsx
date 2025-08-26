@@ -14,55 +14,49 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp } from "@react-navigation/native";
+import { fetchAllLaunches } from "../redux/Slice/LaunchpadSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const PAGE_SIZE = 18;
 
-type base ={
-  detailed: null;
-}
+type base = {
+  detailed: {launched: string};
+};
 
 export default function ListScreen() {
-  const [launches, setLaunches] = useState([]);
+  const dispatch = useDispatch();
   const [filtered, setFiltered] = useState([]);
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const navigation = useNavigation<NavigationProp<base>>()
+  const navigation = useNavigation<NavigationProp<base>>();
 
-  const loadLaunches = async () => {
-    setError(null);
-    setLoading(true);
-    try {
-      const res = await fetch("https://api.spacexdata.com/v5/launches");
-      const data = await res.json();
-      console.log("the  first data is @@@@@@@~~~~!@!!@!@@!",data[0]?.links?.patch?.small)
-      const sorted = data.sort(
-        (a, b) => new Date(b.date_utc) - new Date(a.date_utc)
-      );
-      setLaunches(sorted);
-      if (query.trim()) {
-      const result = sorted.filter((item) =>
+  const { launches, loading, error } = useSelector(
+    (state: any) => state.launchpad
+  );
+
+  useEffect(() => {
+    dispatch(fetchAllLaunches() as any);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!launches) return;
+    if (query.trim()) {
+      const result = launches.filter((item: any) =>
         item.name.toLowerCase().includes(query.toLowerCase())
       );
       setFiltered(result);
     } else {
-      setFiltered(sorted);
+      setFiltered(launches);
     }
+    setVisibleCount(PAGE_SIZE);
+  }, [launches, query]);
 
-      setVisibleCount(PAGE_SIZE);
-    } catch (err) {
-      setError("Failed to load launches");
-    }
-    setLoading(false);
-  };
+  if (loading) return <Text>Loading...</Text>;
 
-  useEffect(() => {
-    loadLaunches();
-  }, []);
+  if (error) return <Text>{error}</Text>;
 
-  const handleSearch = (text) => {
+  const handleSearch = (text: any) => {
     setQuery(text);
     if (!text) {
       setFiltered(launches);
@@ -78,7 +72,7 @@ export default function ListScreen() {
   const onRefresh = async () => {
     // setFiltered(launches)
     setRefreshing(true);
-    await loadLaunches();
+    await dispatch(fetchAllLaunches() as any);
     setRefreshing(false);
   };
 
@@ -88,42 +82,49 @@ export default function ListScreen() {
     }
   };
 
-  const formatDate = (iso) => {
+  const formatDate = (iso: any) => {
     return new Date(iso).toLocaleString();
   };
 
-  const getStatus = (l) => {
+  const getStatus = (l: any) => {
     if (l.upcoming) return { label: "Upcoming", color: "#0A84FF" };
     if (l.success) return { label: "Success", color: "#34C759" };
     return { label: "Failure", color: "#FF3B30" };
   };
 
   type HandleLaunchProp = {
-    item: null,
-  }
+    item: null;
+  };
 
- const handleClick = (item) => {
-  console.log("launch padd id is!!!",item?.launchpad)
-   navigation.navigate("detailed", {launched: item?.launchpad});
-  // console.log("thr navigation pressed is here")
-};
+  const handleClick = (item: any) => {
+    console.log("launch padd id is!!!", item?.launchpad);
+    navigation.navigate("detailed", { launched: item?.launchpad as any });
+    // console.log("thr navigation pressed is here")
+  };
 
   const renderItem = ({ item }) => {
     const status = getStatus(item);
     const img = item.links?.patch?.small;
-  // Skip rendering if no image
+    // Skip rendering if no image
     if (!img) return null;
     return (
-     <TouchableOpacity style={styles.card} onPress={() => handleClick(item)}>
+      <TouchableOpacity style={styles.card} onPress={() => handleClick(item)}>
         <Image source={{ uri: img }} style={styles.image} />
         <View style={styles.content}>
-          <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-          <Text style={styles.title}>{item.name}</Text>
-          <View style={[styles.statusPill, { backgroundColor: status.color + "20" }]}>
-            <Text style={[styles.statusText, { color: status.color }]}>
-              {status.label}
-            </Text>
-          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={styles.title}>{item.name}</Text>
+            <View
+              style={[
+                styles.statusPill,
+                { backgroundColor: status.color + "20" },
+              ]}
+            >
+              <Text style={[styles.statusText, { color: status.color }]}>
+                {status.label}
+              </Text>
+            </View>
           </View>
           <Text style={styles.subtitle}>{formatDate(item.date_utc)}</Text>
         </View>
@@ -143,7 +144,10 @@ export default function ListScreen() {
     return (
       <View style={styles.center}>
         <Text>{error}</Text>
-        <Pressable onPress={loadLaunches} style={styles.retryBtn}>
+        <Pressable
+          onPress={() => dispatch(fetchAllLaunches() as any)}
+          style={styles.retryBtn}
+        >
           <Text style={styles.retryText}>Retry</Text>
         </Pressable>
       </View>
@@ -199,10 +203,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 16,
-    marginTop: 34, 
+    marginTop: 34,
     marginBottom: 8,
     paddingHorizontal: 12,
-    paddingVertical:8,
+    paddingVertical: 8,
     backgroundColor: "#fff",
     borderRadius: 12,
     shadowColor: "#000",
@@ -234,8 +238,8 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     marginBottom: 4,
-    width:"70%",
-    flexWrap:"wrap",
+    width: "70%",
+    flexWrap: "wrap",
   },
   subtitle: {
     fontSize: 14,
