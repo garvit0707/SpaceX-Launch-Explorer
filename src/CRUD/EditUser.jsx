@@ -4,10 +4,13 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
 import api from '../utils/Api/Api';
+import { useDispatch } from 'react-redux';
+import { editUsers } from '../redux/Slice/UserSlice';
 
 
 const UserDetails = () => {
   const navigation = useNavigation()
+  const dispatch = useDispatch()
   const route = useRoute()
   const [newName,setNewName] = useState("");
   const [newEmail,SetNewEmail] = useState("");
@@ -17,18 +20,10 @@ const UserDetails = () => {
   const {name,email,id} = route.params
   const handleTouch =()=>{
     console.log("handle touched has called here!!!")
-    updateUser()
+    dispatch(editUsers({id,name:newName,email:newEmail}));
     navigation.navigate("detailedUser")
   }
 
-  const updateUser = async() =>{
-    const payload ={
-      name: newName,
-      email: newEmail,
-    };
-    const api_response  = await api.put(`users/${id}`,payload);
-    // console.log("api_response of the update apis",api_response)
-  };
 
   return (
     <View style={{flex:1,backgroundColor: "lightgrey"}}>

@@ -10,12 +10,12 @@ import React, { useEffect, useState } from "react";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
-import api from "../utils/Api/Api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteUser, fetchUsers } from "../redux/Slice/UserSlice";
 
 const UserDetails = (props) => {
+  const dispatch = useDispatch();
   const selector = useSelector((state) => state.user)
-  console.log("@@@@@@@@@@@@@@@@@2",selector)
   const route = useRoute();
   console.log("the state log is here",selector.name,selector.email)
 
@@ -28,35 +28,15 @@ const UserDetails = (props) => {
     navigation.navigate("editUser", {name,email,id });
   };
 
-  const handledelete =async(id)=>{
-    await delfun(id)
-    data_get()  
+  
+
+  const handledelete=(id)=>{
+    dispatch(deleteUser(id));
   };
 
-  const delfun =async(id)=>{
-    try {
-      const del_response = await api.delete(`users/${id}`);
-      const del_res  = del_response?.status;
-      console.log(del_res)
-      
-    } catch (error) {
-      console.log("error has been caught here",error)
-    }
-  };
-
-  const data_get = async () => {
-    try {
-      const api_data = await api.get("users");
-      setUser(api_data?.data);
-      console.log("api_data_received_is_this:", api_data?.data);
-    } catch (error) {
-      console.log("the error is caught here!!",error)
-    }
-  };
-
-  useEffect(() => {
-    data_get();
-  }, []);
+  useEffect(()=>{
+    dispatch(fetchUsers())
+  },[])
 
   const handladd = () => {
     navigation.navigate("addUser");
@@ -159,8 +139,7 @@ const style = StyleSheet.create({
     height: 45,
     alignSelf: "center",
     width: 500,
-    // borderWidth:1,
-    // borderColor:"red"
+   
   },
   editscreen: {
     borderWidth: 1,
