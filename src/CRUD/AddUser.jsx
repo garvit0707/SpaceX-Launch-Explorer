@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux";
 import { saveUser } from "../redux/Slice/UserSlice";
 import { createUser } from "../redux/Slice/UserSlice";
 
-
 const UserDetails = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState([]);
@@ -19,14 +18,14 @@ const UserDetails = () => {
   const navigation = useNavigation();
 
   const handleTouch = () => {
-    const payload = {name,email};
-    dispatch(createUser(payload))
-   dispatch(saveUser(payload)); 
+    const payload = { name, email };
+    dispatch(createUser(payload));
+    dispatch(saveUser(payload));
     navigation.navigate("detailedUser", payload);
   };
 
-  const handleuser = ()=>{
-    navigation.navigate("detailedUser")
+  const handleuser = () => {
+    navigation.navigate("detailedUser");
   };
 
   const handlename = (text) => {
@@ -46,19 +45,7 @@ const UserDetails = () => {
       <View style={{ marginLeft: 30, marginVertical: 20 }}>
         <Text style={{ fontSize: 30, fontWeight: "bold" }}>ADD USERS</Text>
 
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: "grey",
-            marginHorizontal: 20,
-            paddingHorizontal: 20,
-            backgroundColor: "#c8c7c7ff",
-            marginVertical: 20,
-            borderRadius: 12,
-            padding: 10,
-            height: "300",
-          }}
-        >
+        <View style={style.textContainer}>
           <View style={{ marginVertical: 30 }}>
             <Text>Name</Text>
             <TextInput
@@ -78,25 +65,14 @@ const UserDetails = () => {
               onChangeText={handlemail}
             ></TextInput>
           </View>
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "grey1",
-              alignItems: "center",
-              marginHorizontal: 100,
-              marginTop: 30,
-              padding: 10,
-              borderRadius: 8,
-              backgroundColor: "grey",
-            }}
-          >
+          <View style={style.container2}>
             <TouchableOpacity onPress={handleTouch}>
               <Text>ADD</Text>
             </TouchableOpacity>
           </View>
-            <TouchableOpacity onPress={handleuser} style={{marginTop:30}}>
-              <Text>user data</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={handleuser} style={{ marginTop: 30 }}>
+            <Text>user data</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -109,10 +85,30 @@ const style = StyleSheet.create({
   textinputbox: {
     borderRadius: 7,
     height: 45,
-    // alignSelf:"center",
     borderWidth: 1,
     padding: 10,
     borderColor: "black",
     marginTop: 10,
+  },
+  textContainer: {
+    borderWidth: 1,
+    borderColor: "grey",
+    marginHorizontal: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "#c8c7c7ff",
+    marginVertical: 20,
+    borderRadius: 12,
+    padding: 10,
+    height: "300",
+  },
+  container2: {
+    borderWidth: 1,
+    borderColor: "grey1",
+    alignItems: "center",
+    marginHorizontal: 100,
+    marginTop: 30,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: "grey",
   },
 });

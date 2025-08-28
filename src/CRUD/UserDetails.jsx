@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -15,30 +15,27 @@ import { deleteUser, fetchUsers } from "../redux/Slice/UserSlice";
 
 const UserDetails = (props) => {
   const dispatch = useDispatch();
-  const selector = useSelector((state) => state.user)
+  const selector = useSelector((state) => state.user);
   const route = useRoute();
-  console.log("the state log is here",selector.name,selector.email)
-
+  console.log("the state log is here", selector.name, selector.email);
 
   const navigation = useNavigation();
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState([]);
 
-  const handledit = (name,email,id) => {
-    console.log("handle edit has been called here", name,email,id)
-    navigation.navigate("editUser", {name,email,id });
+  const handlEdit = (name, email, id) => {
+    // console.log("handle edit has been called here", name,email,id)
+    navigation.navigate("editUser", { name, email, id });
   };
 
-  
-
-  const handledelete=(id)=>{
+  const handleDelete = (id) => {
     dispatch(deleteUser(id));
   };
 
-  useEffect(()=>{
-    dispatch(fetchUsers())
-  },[])
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
 
-  const handladd = () => {
+  const handlAdd = () => {
     navigation.navigate("addUser");
   };
 
@@ -76,55 +73,44 @@ const UserDetails = (props) => {
             marginTop: 20,
           }}
         >
-          <TouchableOpacity style={style.editscreen} onPress={handledit}>
+          <TouchableOpacity style={style.editscreen} onPress={handlEdit}>
             <Text>EDIT Screen</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={style.editscreen} onPress={handladd}>
+          <TouchableOpacity style={style.editscreen} onPress={handlAdd}>
             <Text>ADD Screen</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView
-          style={{
-            borderWidth: 1,
-            borderColor: "grey",
-            marginHorizontal: 44,
-            marginVertical: 20,
-            padding: 10,
-            borderRadius: 8,
-            flexDirection: "column",
-            gap:10,
-          }}
-        >
+        <ScrollView style={style.scrollContainer}>
           {user?.map((items) => (
-            <View key={items.id} style={{ marginBottom: 10,borderWidth:2,borderColor:"green"}}>
-              <View
-                style={{
-                  borderWidth:2,
-                  borderColor:"red",
-                  padding: 5,
-                  borderRadius: 10,
-                  flexDirection:"column"
-                }}
-              >
+            <View
+              key={items.id}
+              style={style.outerBox}
+            >
+              <View style={style.detailedContainer}>
                 <Text>{items.name}</Text>
                 <Text>{items.email}</Text>
               </View>
-              <View style={{ flexDirection: "row", gap: 8, marginTop: 5 }}>
-                <TouchableOpacity style={style.editscreen} onPress={()=>handledit(items?.name,items?.email,items?._id)}>
+              <View style={style.buttonContainer}>
+                <TouchableOpacity
+                  style={style.editscreen}
+                  onPress={() =>
+                    handlEdit(items?.name, items?.email, items?._id)
+                  }
+                >
                   <Text>EDIT</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style ={style.editscreen} onPress={()=>handledelete(items?.id)}>
-                  <Text>
-                    DELETE
-                  </Text>
+                <TouchableOpacity
+                  style={style.editscreen}
+                  onPress={() => handleDelete(items?.id)}
+                >
+                  <Text>DELETE</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={style.editscreen} onPress={handladd}>
+                <TouchableOpacity style={style.editscreen} onPress={handlAdd}>
                   <Text>ADD</Text>
                 </TouchableOpacity>
               </View>
             </View>
           ))}
-
         </ScrollView>
       </View>
     </View>
@@ -139,7 +125,6 @@ const style = StyleSheet.create({
     height: 45,
     alignSelf: "center",
     width: 500,
-   
   },
   editscreen: {
     borderWidth: 1,
@@ -151,6 +136,23 @@ const style = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "grey",
   },
+  scrollContainer: {
+    borderWidth: 1,
+    borderColor: "grey",
+    marginHorizontal: 44,
+    marginVertical: 20,
+    padding: 10,
+    borderRadius: 8,
+    flexDirection: "column",
+    gap: 10,
+  },
+  detailedContainer: {
+    borderWidth: 2,
+    borderColor: "red",
+    padding: 5,
+    borderRadius: 10,
+    flexDirection: "column",
+  },
+  buttonContainer: { flexDirection: "row", gap: 8, marginTop: 5 },
+  outerBox:{ marginBottom: 10, borderWidth: 2, borderColor: "green"}
 });
-
-
