@@ -15,11 +15,9 @@ export const userSlice = createSlice({
             const {name,email} = action.payload
             state.name = name;
             state.email = email;
-            console.log("the saveuser slice is ",action?.payload)
         }
     }
 })
-
 
 export const {saveUser} = userSlice.actions;
 export default userSlice.reducer;

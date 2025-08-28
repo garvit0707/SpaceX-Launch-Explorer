@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 const PAGE_SIZE = 18;
 
 type base = {
-  detailed: {launched: string};
+  detailed: { launched: string };
 };
 
 export default function ListScreen() {
@@ -70,7 +70,6 @@ export default function ListScreen() {
   };
 
   const onRefresh = async () => {
-    // setFiltered(launches)
     setRefreshing(true);
     await dispatch(fetchAllLaunches() as any);
     setRefreshing(false);
@@ -97,7 +96,7 @@ export default function ListScreen() {
   };
 
   const handleClick = (item: any) => {
-    console.log("launch padd id is!!!", item?.launchpad);
+    // console.log("launch padd id is!!!", item?.launchpad);
     navigation.navigate("detailed", { launched: item?.launchpad as any });
     // console.log("thr navigation pressed is here")
   };
@@ -111,9 +110,7 @@ export default function ListScreen() {
       <TouchableOpacity style={styles.card} onPress={() => handleClick(item)}>
         <Image source={{ uri: img }} style={styles.image} />
         <View style={styles.content}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
+          <View style={styles.containerContent}>
             <Text style={styles.title}>{item.name}</Text>
             <View
               style={[
@@ -158,11 +155,7 @@ export default function ListScreen() {
     <View style={styles.screen}>
       {/* Search bar */}
       <View style={styles.searchBox}>
-        <Ionicons
-          name="search-outline"
-          size={18}
-          style={{ marginRight: 8, opacity: 0.6 }}
-        />
+        <Ionicons name="search-outline" size={18} style={styles.iconstyle} />
         <TextInput
           placeholder="Search missions"
           value={query}
@@ -267,5 +260,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
   },
+  containerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   retryText: { color: "#fff" },
+  iconstyle: {
+    marginRight: 8,
+    opacity: 0.6,
+  },
 });
